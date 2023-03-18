@@ -55,16 +55,14 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
   const personMatch = persons.find(person => person.name === body.name)
-  console.log(personMatch)
+  
   if (!body.name || !body.number) {
     return response.status(400).json({ 
       error: 'name or number missing' 
     })
-  }
-  
-  if (personMatch){
+  } else if (personMatch){
     return response.status(400).json({ 
-      error: 'name already exists' 
+      error: 'name must be unique' 
     })
   }
 
