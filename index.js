@@ -31,10 +31,19 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/info', (request, response) => {
-  
   const date = new Date().toDateString();
   const time = new Date().toTimeString();
   response.send(`Phonebook has info for ${persons.length} people <br /><br /> ${date} ${time}`)
+})
+
+app.get('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const person = persons.find(person => person.id === id)
+  if (person) {
+    response.json(person)
+  } else {
+    response.status(404).end()
+  }
 })
 
 const PORT = 3001
