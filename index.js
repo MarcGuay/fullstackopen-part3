@@ -12,10 +12,12 @@ app.use(express.static('build'))
 morgan.token('postdata', function (req, res) { return JSON.stringify(req.body) })
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postdata'));
 
-app.get('/api/persons', (request, response) => {
-  Person.find({}).then(person => {
-    response.json(person)
-  })
+app.get('/api/persons', (request, response, next) => {
+  Person.find({})
+    .then(person => {
+      response.json(person)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/info', (request, response) => {
@@ -42,7 +44,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if (body.name === undefined || body.number === undefined) {
@@ -57,6 +59,7 @@ app.post('/api/persons', (request, response) => {
   person.save().then(savedPerson => {
     response.json(savedPerson)
   })
+  .catch(error => next(error))
 })
 
 
