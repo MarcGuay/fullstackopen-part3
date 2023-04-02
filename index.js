@@ -21,19 +21,24 @@ app.get('/api/persons', (request, response, next) => {
 })
 
 app.get('/api/info', (request, response) => {
+
   const date = new Date().toDateString();
   const time = new Date().toTimeString();
-  response.send(`Phonebook has info for ${persons.length} people <br /><br /> ${date} ${time}`)
+  
+  Person.countDocuments({})
+    .then(count => {
+        response.send(`Phonebook has info for ${count} people <br /><br /> ${date} ${time}`)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-  if (person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
+  
+  Person.findById(request.params.id)
+    .then(person => {
+      response.json(person)
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
