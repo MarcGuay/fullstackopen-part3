@@ -42,28 +42,21 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
-  const personMatch = persons.find(person => person.name === body.name)
-  
-  if (!body.name || !body.number) {
-    return response.status(400).json({ 
-      error: 'name or number missing' 
-    })
-  } else if (personMatch){
-    return response.status(400).json({ 
-      error: 'name must be unique' 
-    })
+
+  if (body.name === undefined || body.number === undefined) {
+    return response.status(400).json({ error: 'name or number missing' })
   }
 
-  const person = {
-    id: Math.floor(Math.random() * 99999999),
+  const person = new Person({
     name: body.name,
     number: body.number
-  }
+  })
 
-  persons = persons.concat(person)
-  
-  response.json(person)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
+
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
