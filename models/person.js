@@ -19,7 +19,26 @@ const personSchema = new mongoose.Schema({
     type: String,
     minLength: 3
   },
-  number: String,
+  number: {
+    type: String,
+    minLength: 8,
+    validate: {
+      validator: function(v) {
+        const splat = v.split('-');
+        if (splat.length == 1){
+            // If no hyphen, return true (will be validated for minLength 8 by native validator)
+            return true 
+        } else if (splat.length == 2){
+            // If one hyphen, regex validate
+            return /\d{2,3}-\d+/.test(v) 
+        } else {
+            // If more than one hyphen, return false
+            return false 
+        }
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    },
+  },
 })
 
 personSchema.set('toJSON', {
