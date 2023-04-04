@@ -26,8 +26,8 @@ const personSchema = new mongoose.Schema({
       validator: function(v) {
         const splat = v.split('-')
         if (splat.length === 1){
-          // If no hyphen, return true (will be validated for minLength 8 by native validator)
-          return true
+          // If no hyphen, check for digits (will be validated for minLength 8 by native validator)
+          return /\d+/.test(v)
         } else if (splat.length === 2){
           // If one hyphen, regex validate
           return /\d{2,3}-\d+/.test(v)
